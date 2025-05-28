@@ -1,1 +1,107 @@
-yoyo
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    
+    <script type="text/javascript" data-cfasync="false">
+      // PASTE YOUR POPADS SCRIPT HERE
+    </script>
+    
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f9f9f9;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        .loader {
+            border: 6px solid #e0e0e0;
+            border-radius: 50%;
+            border-top: 6px solid #4285F4; /* Google Blue */
+            width: 50px;
+            height: 50px;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 25px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .message {
+            font-size: 22px;
+            color: #5f6368;
+        }
+        /* The ad spot is now just a part of the container */
+        .ad-spot {
+            margin-top: 30px;
+            /* The PopAds script will likely create its own ad elements */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="loader"></div>
+        <div class="message">Please wait while we securely redirect you...</div>
+        <div class="ad-spot">
+            </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- CONFIGURATION ---
+            const REDIRECT_DELAY_MS = 5000; // 5 seconds
+
+            /**
+             * Extracts the destination URL from the page's path.
+             * On GitHub Pages, for a URL like "user.github.io/repo/google.com",
+             * the path is "/repo/google.com". We need to extract "google.com".
+             */
+            function getDestinationUrl() {
+                const path = window.location.pathname;
+                // Split the path by slashes and filter out empty strings (from leading/trailing slashes)
+                const pathParts = path.split('/').filter(part => part.length > 0);
+
+                // Assuming the structure is /repo-name/destination.url
+                // The destination is the last part of the path.
+                if (pathParts.length > 1) {
+                    return pathParts[pathParts.length - 1];
+                }
+                return null; // No destination found
+            }
+
+            const destination = getDestinationUrl();
+
+            if (destination) {
+                // Set a timeout to perform the redirect
+                setTimeout(() => {
+                    let fullUrl = destination;
+                    // Check if the URL already has a protocol, otherwise add https://
+                    if (!/^https?:\/\//i.test(fullUrl)) {
+                        fullUrl = 'https://' + fullUrl;
+                    }
+                    // Redirect to the destination
+                    window.location.replace(fullUrl);
+                }, REDIRECT_DELAY_MS);
+            } else {
+                // If the 404 page is somehow reached without a destination,
+                // redirect back to the main site page after a short delay.
+                setTimeout(() => {
+                    // Redirects to the root of your GitHub pages site
+                    window.location.replace(window.location.origin + '/' + window.location.pathname.split('/')[1]); 
+                }, 2000);
+            }
+        })();
+    </script>
+
+</body>
+</html>
